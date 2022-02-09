@@ -62,7 +62,7 @@ export default class IssueItem extends React.Component {
                                             <TableCell align="right">Issue</TableCell>
                                             <TableCell align="right">Summary</TableCell>
                                             <TableCell align="right">Label</TableCell>
-
+                                            <TableCell align="right">Comment</TableCell>
                                             <TableCell align="right">Details</TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -76,6 +76,7 @@ export default class IssueItem extends React.Component {
                                                 <TableCell align="right">{row.issue}</TableCell>
                                                 <TableCell align="right">{row.summary}</TableCell>
                                                 <TableCell align="right">{row.label}</TableCell>
+                                                <TableCell align="right">{row.comment}</TableCell>
                                                 <TableCell align="right"><DetailsIcon onClick={()=>this.props.handleBox2(row)}/></TableCell>
                                             </TableRow>
                                         ))}

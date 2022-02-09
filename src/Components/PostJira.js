@@ -117,7 +117,7 @@ export default function PostJira() {
   const [summary, setSummary] = useState("");
   const [label, setLabel] = useState("");
   const [issue, setIssue] = useState("");
-  // const [summary, setsummary] = useState("");
+  
 
   useEffect(() => { }, []);
 

@@ -13,9 +13,15 @@ import { useState } from 'react';
 import images from "../images/avatar1.png";
 import { default as IssueItem } from './issueItem';
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 import { TextField } from '@mui/material';
+import axios from 'axios';
+import { useEffect} from 'react';
+import ActionGroup from '@mui/material/ButtonGroup';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 const commonStyles = {
     bgcolor: 'background.paper',
     m: 0,
@@ -41,17 +47,17 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-// const style = {
-//     position: 'absolute',
-//     top: '50%',
-//     left: '50%',
-//     transform: 'translate(-50%, -50%)',
-//     width: 400,
-//     bgcolor: 'background.paper',
-//     border: '2px solid #000',
-//     boxShadow: 24,
-//     p: 4,
-//   };
+const buttonstyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 export default function App() {
     const [items, setItems] = useState([]);
     const [data,setData]=useState({});
@@ -60,13 +66,56 @@ export default function App() {
         console.log(data)
         setData(data);
     }
+
+    
     const [disable, setDisable] = React.useState(false);
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     // const [open, setOpen] = React.useState(false);
     // const handleOpen = () => setOpen(true);
     // const handleClose = () => setOpen(false);
+
+
+    const [comment, setComment] = useState("");
+    const [id, setId] = useState("");
+
+  
+    useEffect(() => { }, []);
+  
+    const handleSubmitted = () => {
+      console.log(comment,id);
+      axios
+        .post('http://localhost:8080/Jira/jira', {
+        
+          comment:comment,
+          id:id
+        })
+        .then((res) => {
+          console.log(res);
+          console.log(res.data);
+        }
+        );
+      
+  
+    };
+  
+
+    const [open, setOpen] = React.useState(false);
+
+
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+  
+    const handleClick = () => {
+      setOpen(true);
+    }
+  
+  
+    
+
+
+  
+        
   
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -163,83 +212,101 @@ export default function App() {
             <b> DETAILS </b>
                 <b> </b>
                 <h3>Add pointer to main css file to instruct create child themes</h3>
+                
+                
+
+      
+    
+    
+
+
+    
+                <Stack spacing={2} direction="row">
+    < Button  align="left" variant="inherit" disabled={disable} onClick={() => setDisable(true)}>
+      start
+    </Button>
+    
+        
+            <div>
+              <Button variant="inherit" onClick={handleClick}>
+                Development in Progress
+              </Button>
+              <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>ISSUES</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Comment Your Issue here 
+
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Comment"
+                    type="email"
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                
+                 
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Id"
+                    type="email"
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => setId(e.target.value)}
+                  />
+
+
+                </DialogContent>
+                <DialogActions>
+                  {/* <Button onClick={handleClose}>Cancel</Button> */}
+                  {/* <Button onClick={handleClose}>Submit
+          
+          </Button> */}
+
+                  <ActionGroup>
+                    <Button variant="primary" onClick={handleSubmitted }>Submit</ Button>
+                   
+                  </ActionGroup>
+       
+                </DialogActions>
+              </Dialog>
+            </div>
+
+            
+            
+            </Stack >
+            
+          
+            
+            
+
+      
+    
                 <div>
                     <h3 align="left" >ID:{' '}{data.id}</h3>
                     <h3 align="left">ISSUE:{' '}{data.issue}</h3>
                     <h3 align="left">SUMMARY:{' '}{data.summary}</h3>
-                    <h3 align="left">LABEL:{' '}{data.summary}</h3>
+                    <h3 align="left">LABEL:{' '}{data.label}</h3>
+                    <h3 align="left">Comment:{' '}{data.comment}</h3>
                 </div>
                 <Stack direction="row" spacing={2}>
 
-                < Button  variant="contained" disabled={disable} onClick={() => setDisable(true)}>
-      start
-    </Button>
-    <div>
-      <Button onClick={handleOpen}>Open modal</Button>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Comments"
-                    type="email"
-                    fullWidth
-                    variant="standard"
-                    
-                  />
-        </Box>
-      </Modal>
-    </div>
     </Stack>
 
 
-                {/* <Stack direction="row" spacing={2}>
-                    <Button variant="outlined" endIcon={<EditIcon />}>
-                        Edit
-                    </Button>
-                    <Button variant="outlined" startIcon={<ModeCommentIcon />}>
-                        Comment
-                    </Button>
-                    <Button variant="outlined" >
-                        Assign
-                    </Button>
-                    <Button variant="outlined" >
-                        Start
-                    </Button>
-
-
-                </Stack> */}
+                
                 
    
 
 
     
-                {/* <List sx={style} component="nav" aria-label="mailbox folders">
-                    <ListItem button>
-                        <ListItemText primary="Type" />
-                    </ListItem>
-                    
-                    <ListItem button divider>
-                        <ListItemText primary="Version" />
-                    </ListItem>
-                    
-                    <ListItem button>
-                        <ListItemText primary="Issue" />
-                    </ListItem>
-                    
-                    <ListItem button>
-                        <ListItemText primary="Summary" />
-                    </ListItem>
-                </List> */}
+               
             </Box>
 
         </Box>

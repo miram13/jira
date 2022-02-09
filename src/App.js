@@ -4,6 +4,8 @@ import PostJira from './Components/PostJira';
 import Menu from './Components/Menu';
 import Search from './Components/Search';
 import Grid from './Components/Grid';
+
+
 function App() {
   return (
     <div className="App">
@@ -11,6 +13,7 @@ function App() {
       <Menu />
       <Search />
       <Grid />
+    
     </div>
   );
 }
