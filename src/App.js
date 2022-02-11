@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import * as React from 'react';
 import './App.css';
 import PostJira from './Components/PostJira';
 import Menu from './Components/Menu';
@@ -7,13 +7,19 @@ import Grid from './Components/Grid';
 
 
 function App() {
+  const [searchItem, setSearchItem] = React.useState("")
   return (
     <div className="App">
+
+      
     <PostJira />
       <Menu />
       <Search />
-      <Grid />
-    
+      <Grid
+          
+setSearchItem={setSearchItem}
+      />
+
     </div>
   );
 }

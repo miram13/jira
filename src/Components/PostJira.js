@@ -24,6 +24,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ActionGroup from '@mui/material/ButtonGroup';
+import { FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+
 const StyledMenu = styled((props) => (
   <Menu
     elevation={0}
@@ -117,31 +119,25 @@ export default function PostJira() {
   const [summary, setSummary] = useState("");
   const [label, setLabel] = useState("");
   const [issue, setIssue] = useState("");
-  
+  const [status, setStatus] = useState("");
 
   useEffect(() => { }, []);
 
   const handleSubmit = () => {
-    console.log(summary,label,issue);
+    console.log(summary,label,issue,status);
     axios
       .post('http://localhost:8080/Jira/jira', {
         issue:issue,
         summary:summary,
-        label:label
+        label:label,
+        status:status
       })
       .then((res) => {
         console.log(res);
         console.log(res.data);
       }
       );
-      // axios.get('http://localhost:8080/Jira/jira')
-      // .then((response)=>{
-      //   console.log(response);
-      //   setOpen(false)
-      // }).catch((err)=>{
-      //   console.log(err)
-      // })
-
+     
   };
 
 
@@ -159,6 +155,17 @@ export default function PostJira() {
   }
 
 
+  const [values, setValues] = React.useState([
+    "Active",
+    "Progrees",
+    "Pending",
+    "Completed"
+  ]);
+  const [selected, setSelected] = useState("Active");
+
+  function handleChange(event) {
+    setSelected(event.target.value);
+  }
 
 
 
@@ -270,7 +277,7 @@ export default function PostJira() {
                     margin="dense"
                     id="name"
                     label="Issues"
-                    type="email"
+                    type="text"
                     fullWidth
                     variant="standard"
                     onChange={(e) => setIssue(e.target.value)}
@@ -290,21 +297,35 @@ export default function PostJira() {
                     margin="dense"
                     id="name"
                     label="Label"
-                    type="email"
+                    type="text"
                     fullWidth
                     variant="standard"
                     onChange={(e) => setLabel(e.target.value)}
                   />
 
+<FormControl>
+      <InputLabel htmlFor="status-simple">Status</InputLabel>
+      <Select
+     
+        value={selected}
+        onChange={handleChange}
+        inputProps={{
+          name: "status",
+          // id: "age-simple"
+        }}
+      >
+        {values.map((value, index) => {
+          return <MenuItem value={value}>{value}</MenuItem>;
+        })}
+          onChange={(e) => setStatus(e.target.value)}
+      </Select>
+    </FormControl>
+  
 
 
                 </DialogContent>
                 <DialogActions>
-                  {/* <Button onClick={handleClose}>Cancel</Button> */}
-                  {/* <Button onClick={handleClose}>Submit
-          
-          </Button> */}
-
+                
 
 
                   <ActionGroup>
