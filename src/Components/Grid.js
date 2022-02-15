@@ -1,7 +1,5 @@
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import Icon from '@mui/material/Icon';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
@@ -12,8 +10,9 @@ import * as React from 'react';
 import { useState } from 'react';
 import images from "../images/avatar1.png";
 import { default as IssueItem } from './issueItem';
+import {  store } from './issueItem';
 import Button from '@mui/material/Button';
-import { TextField, Toolbar } from '@mui/material';
+import { Table, TextField, Toolbar } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
 import ActionGroup from '@mui/material/ButtonGroup';
@@ -22,7 +21,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
 const date = new Date().toLocaleDateString();
 const time = new Date().toLocaleTimeString();
 const commonStyles = {
@@ -61,9 +59,18 @@ const buttonstyle = {
   boxShadow: 24,
   p: 4,
 };
+
 export default function App() {
+  
   const [items, setItems] = useState([]);
   const [data, setData] = useState({});
+  React.useEffect(() => {
+    
+    console.log('hello' , items)
+
+   
+  }, items)
+
 
   function handleBox2(data) {
     console.log(data)
@@ -71,12 +78,12 @@ export default function App() {
   }
 
 
-  const [disable, setDisable] = React.useState(false);
+  // const [disable, setDisable] = React.useState(false);
 
-  const [comment, setComment] = useState("");
+  const [request, setRequest] = useState("");
   const [id, setId] = useState("");
   const [issue, SetIssue] = useState("");
-
+  const [development, setDevelopment] = useState("");
 
 
   // useEffect(() => { }, []);
@@ -84,11 +91,13 @@ export default function App() {
   const handleSubmit = () => {
     const data2 = {
       "id": id,
-      "comment": comment,
+      "request" : request,
+      // "comment": comment,
       "issue": "",
       "label": "",
       "summary": "",
-      "status": "2"
+      // "status": "2"
+      "development": development
     }
     axios
       .put('http://localhost:8080/Jira/jira/' + id, data2)
@@ -115,26 +124,37 @@ export default function App() {
   }
 
 
-  // const [searchText, setSearchText] = React.useState("")
-  // React.useEffect(() => {
-  //   console.log(searchText)
-  //   // onData(data)
+  const [searchText, setSearchText] = React.useState("")
+  let searchResult
+  React.useEffect(() => {
+    console.log(searchText)
+    console.log('store data', store)
+    console.log(typeof store)
+    searchResult = 'JSON.parse(store).filter(obj => ((obj.data).match(${searchText}*)!==""))'
+    console.log("search result" , searchResult)
+  }, [searchText])
 
-  // }, [searchText])
 
+
+
+
+
+  const [summary, setSummary] = useState("");
 
 
   const handleSubmitted = () => {
     const data3 = {
       "id": id,
-      "comment": comment,
+      // "comment": comment,
       "issue": "issue",
       "label": "label",
       "summary": "summary",
-      "status": "2"
+      "development": development,
+      "request" : request
+      // "status": "2"
     }
     axios
-      .post('http://localhost:8080/Jira/jira/' + id, data3)
+      .put('http://localhost:8080/Jira/jira/' + id, data3)
       .then((res) => {
         console.log(res);
 
@@ -184,15 +204,16 @@ export default function App() {
   // }
 
   const [searchItem, setSearchItem] = React.useState("")
-  useEffect(()=>{
-    
-    if(searchItem.length > 0){
-    const search = items.filter(item=>item.summary.includes(searchItem))
-    setItems(search)}
-    else{
+  useEffect(() => {
+
+    if (searchItem.length > 0) {
+      const search = items.filter(item => item.summary.includes(searchItem))
+      setItems(search)
+    }
+    else {
       return setSearchItem(items)
     }
-  },[searchItem])
+  }, [searchItem])
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -223,7 +244,7 @@ export default function App() {
 
       </Box>
 
-      <Box sx={{ ...commonStyles, borderColor: 'secondary.main', spacing: "30px", p: 1, width: '40rem' }} >
+      <Box sx={{ ...commonStyles, borderColor: 'secondary.main', spacing: "30px", p: 1, width: '45rem' }} >
         {/* <b>SPRINT6</b> */}
 
         <div>
@@ -243,24 +264,24 @@ export default function App() {
           </div>
 
           <div>
-<Toolbar>
-            <Stack direction="row" spacing={2} rowGap="60px">
-              <Avatar src={images} alt="keep" width="75px" />
-              <Avatar src={images} alt="keep" width="75px" />
-              <Avatar alt="Remy Sharp" src="/avatar2.jpeg" />
-              <Avatar alt="Travis Howard" src="/images/avatar/2.jpg" />
-              <Avatar alt="Pindy Baker" src="/images/avatar/3.jpg" />
-              <Avatar alt="MOT Baker" src="/images/avatar/3.jpg" />
-              <Avatar alt="Cindy Baker" src="/images/avatar/3.jpg" />
+            <Toolbar>
+              <Stack direction="row" spacing={2} rowGap="60px">
+                <Avatar src={images} alt="keep" width="75px" />
+                <Avatar src={images} alt="keep" width="75px" />
+                <Avatar alt="Remy Sharp" src="/avatar2.jpeg" />
+                <Avatar alt="Travis Howard" src="/images/avatar/2.jpg" />
+                <Avatar alt="Pindy Baker" src="/images/avatar/3.jpg" />
+                <Avatar alt="MOT Baker" src="/images/avatar/3.jpg" />
+                <Avatar alt="Cindy Baker" src="/images/avatar/3.jpg" />
 
 
-            </Stack>
+              </Stack>
 
-</Toolbar>
+            </Toolbar>
 
           </div>
           <div>
-            <input type="search" placeholder="search something..." onChange={e => setSearchItem(e.target.value)}
+            <input type="search" placeholder="search something..." onChange={e => setSearchText(e.target.value)}
               style={{ padding: 10, fontSize: "105%", width: "100%", outline: 0 }} />
 
           </div>
@@ -289,7 +310,6 @@ export default function App() {
               </div>
             </Stack>
 
-
           </Box>
         </div>
       </Box>
@@ -302,18 +322,16 @@ export default function App() {
         <b> </b>
         <h3>Add pointer to main css file to instruct create child themes</h3>
 
-
+        {/* <MoreVertIcon > </MoreVertIcon> */}
 
 
         <Stack spacing={2} direction="row">
-          < Button align="left" variant="inherit" onClick={handleSubmitted} >
+          {/* < Button align="left" variant="inherit" onClick={handleSubmitted} >
             Edit
-          </Button>
-
-
+          </Button> */}
           <div>
-            <Button variant="inherit" onClick={handleClick}>
-              Development in Progress
+            <Button variant="outlined" onClick={handleClick}>
+              Updating Status
             </Button>
             <Dialog open={open} onClose={handleClose}>
               <DialogTitle>ISSUES</DialogTitle>
@@ -322,16 +340,7 @@ export default function App() {
                   Comment Your Issue here
 
                 </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Comment"
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  onChange={(e) => setComment(e.target.value)}
-                />
+
 
 
                 <TextField
@@ -346,6 +355,99 @@ export default function App() {
                 />
 
 
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Development Comment"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  value={data.Summary}
+              
+                  onChange={(e) => setSummary(e.target.value)}>
+                
+            console.log("summ" , data.summary);
+
+                </TextField>
+
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Request Comment"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  onChange={(e) => setRequest(e.target.value)}
+                />
+
+              </DialogContent>
+              <DialogActions>
+
+
+                <ActionGroup>
+                  <Button variant="primary" onClick={handleSubmitted}>Submit</ Button>
+
+                </ActionGroup>
+
+              </DialogActions>
+            </Dialog>
+          </div>
+
+
+
+           {/* <div>
+            <Button variant="inherit" onClick={handleClick}>
+              STATUS
+            </Button>
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>ISSUES</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Comment Your Issue here
+
+                </DialogContentText>
+
+
+
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Id"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  onChange={(e) => setId(e.target.value)}
+                />
+
+
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Comment"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  onChange={(e) => setComment(e.target.value)}
+                />
+ */}
+
+                
+
+                {/* <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Summary"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                  onChange={(e) => setSummary(e.target.value)}
+                /> */}
+{/* 
               </DialogContent>
               <DialogActions>
 
@@ -357,9 +459,9 @@ export default function App() {
 
               </DialogActions>
             </Dialog>
-          </div>
+          </div> */}
 
-
+ 
 
         </Stack >
 
@@ -367,20 +469,74 @@ export default function App() {
 
 
         <div>
-          <h3 align="left" >ID:{' '}{data.id}</h3>
-          <h3 align="left">ISSUE:{' '}{data.issue}</h3>
-          <h3 align="left">SUMMARY:{' '}{data.summary}</h3>
-          <h3 align="left">LABEL:{' '}{data.label}</h3>
-          <h3 align="left">STATUS:{' '}{data.status}</h3>
-          <h3 align="left">Comment:{' '}{data.comment}</h3>
+          <Table>
 
+            <h3 align="left">Id:{''}{data.id}</h3>
+            <h3 align="left">Issue:{' '}{data.issue}</h3>
+            <h3 align="left">Summary:{' '}{data.summary}</h3>
+            <h3 align="left">Label:{' '}{data.label}</h3>
+            <h3 align="left">State:{' '}{data.state}</h3>
+            <h3 align="left">Development:{' '}{data.development}</h3>
+            <h3 align="left">Request:{' '}{data.request}</h3>
+          </Table>
         </div>
-        <Stack direction="row" spacing={2}>
-
-        </Stack>
 
 
 
+
+
+
+        {/* <Grid
+          container
+          justify="center"
+          alignItems="center"
+
+        >
+          <Grid container direction="row" alignItems="center" alignContent="center">
+
+            <Grid item xs={10}>
+              <TextField
+                name="name"
+                id="name"
+
+                fullWidth
+                margin="normal"
+                label="Enter your name"
+                variant="filled"
+
+              />
+            </Grid>
+          </Grid>{" "}
+          <Grid container direction="row" alignItems="center">
+
+            <Grid item xs={10}>
+              <TextField
+                name="phone"
+                id="phone"
+
+                fullWidth
+                margin="normal"
+                label="Enter your phone number "
+                variant="filled"
+
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+
+        <Stack direction="row" spacing={10}>
+
+        </Stack> */}
+
+        {/* 
+        <form>
+  <label>
+    Name:
+    <input type="text" name="name" />
+  </label>
+  <input type="submit" value="Submit" onClick={handleSubmit} />
+</form> */}
 
 
 

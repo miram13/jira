@@ -9,22 +9,26 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import DetailsIcon from '@mui/icons-material/Details';
+import MaterialTable from "material-table";
 import Search from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from 'react';
+
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-
+export let store
 
 export default class IssueItem extends React.Component {
     
+
     constructor(props) {
+
         super(props);
         this.state = {
             items: []
+            
         }
-
-        
-
+ 
     }
 
 
@@ -34,6 +38,9 @@ export default class IssueItem extends React.Component {
         axios.get("http://localhost:8080/Jira/jira")
             .then((response) => {
                 console.log('response from backend', response);
+                // console.log('response1', response);
+                store = response.data
+                console.log('hii', store);
                 this.setState({
                     items: response.data
                 });
@@ -41,11 +48,12 @@ export default class IssueItem extends React.Component {
                 console.log(error);
             })
     }
-  
+    "use strict"
     handleRefresh = () => {
         axios.get("http://localhost:8080/Jira/jira")
             .then((response) => {
                 console.log('response from backend', response);
+             
                 this.setState({
                     items: response.data
                 });
@@ -65,7 +73,7 @@ export default class IssueItem extends React.Component {
 
 
                 <div>
-                    <span><Button onClick={this.handleRefresh}>Tickets Updated List</Button></span>
+                    <span><Button style={{color: 'blue'}} onClick={this.handleRefresh}>Tickets Updated List</Button></span>
                     
                     <TableContainer component={Paper}>
                        
@@ -76,11 +84,18 @@ export default class IssueItem extends React.Component {
                                     <TableCell align="right">Issue</TableCell>
                                     <TableCell align="right">Summary</TableCell>
                                     <TableCell align="right">Label</TableCell>
-                                    <TableCell align="right">Status</TableCell>
-                                    <TableCell align="right">Comment</TableCell>
+                                    <TableCell align="right">State</TableCell>
+                                    <TableCell align="right">development</TableCell>
+                                    <TableCell align="right">request</TableCell>
                                     <TableCell align="right">Details</TableCell>
+                                    {/* <MaterialTable 
+                            options={{sorting:true,search:true}} /> */}
+                                    {/* <TableCell align="right">Edit</TableCell> */}
+                                  
                                 </TableRow>
                             </TableHead>
+                           
+                            
                             <TableBody>
                                 {this.state.items.map((row) => (
                                     <TableRow
@@ -88,12 +103,15 @@ export default class IssueItem extends React.Component {
                                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     >
                                         <TableCell component="th" scope="row">{row.id}</TableCell>
-                                        <TableCell align="right">{row.issue}</TableCell>
+                                        <TableCell  align="right">{row.issue}</TableCell>
                                         <TableCell align="right">{row.summary}</TableCell>
                                         <TableCell align="right">{row.label}</TableCell>
-                                        <TableCell align="right">{row.status}</TableCell>
-                                        <TableCell align="right">{row.comment}</TableCell>
+                                        <TableCell align="right">{row.state}</TableCell>
+                                        <TableCell align="right">{row.development}</TableCell>
+                                        <TableCell align="right">{row.request}</TableCell>
                                         <TableCell align="right"><DetailsIcon onClick={() => this.props.handleBox2(row)} /></TableCell>
+                                        
+                                        
                                     </TableRow>
                                 ))}
                             </TableBody>
